@@ -1,6 +1,7 @@
 package com.lightscout.c19tracker.model.network
 
 import com.lightscout.c19tracker.model.data.CountryResult
+import com.lightscout.c19tracker.model.data.Totals
 import com.lightscout.c19tracker.model.data.TotalsItem
 import com.lightscout.c19tracker.util.Constants.Companion.API_HOST
 import com.lightscout.c19tracker.util.Constants.Companion.API_KEY
@@ -15,12 +16,12 @@ interface APIService {
 
 
     @Headers(API_KEY, API_HOST)
-
     @GET(PATH_BY_COUNTRY_NAME)
     fun getDailyReportByCountryName(@Query("date") date: String, @Query("name") name: String, @Query("format") format: String): Call<List<CountryResult>>
-    
+
+    @Headers(API_KEY, API_HOST)
     @GET(PATH_DAILY_RESULT)
-    fun getLatestTotals(): Call<TotalsItem>
+    fun getLatestTotals(): Call<Totals>
 
 
 }
