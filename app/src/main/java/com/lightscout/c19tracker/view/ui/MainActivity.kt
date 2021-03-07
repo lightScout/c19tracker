@@ -1,55 +1,50 @@
 package com.lightscout.c19tracker.view.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.lightscout.c19tracker.R
+import com.lightscout.c19tracker.databinding.ActivityMainBinding
 import com.lightscout.c19tracker.model.data.CountryResult
 import com.lightscout.c19tracker.model.data.Totals
-import com.lightscout.c19tracker.model.network.APIRetrofit
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.lightscout.c19tracker.presenter.CovidAppContract
+import com.lightscout.c19tracker.presenter.CovidAppPresenter
 
 
+class MainActivity : AppCompatActivity(), CovidAppContract.AppView {
 
-class MainActivity : AppCompatActivity() {
 
-    private val apiRetrofit : APIRetrofit = APIRetrofit()
+    private lateinit var presenter: CovidAppPresenter
+
+    private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        Thread{
-            apiRetrofit.getDataFromCountry("Portugal").enqueue(object : Callback<List<CountryResult>> {
-                override fun onResponse(call: Call<List<CountryResult>>, response: Response<List<CountryResult>>) {
-                    response.body()?.let {
-                        Log.d("TAG_J", "${it[0].country}")
-                    }
-                }
+        presenter = CovidAppPresenter(this)
+        presenter.getWorldCovidResults()
 
-                override fun onFailure(call: Call<List<CountryResult>>, t: Throwable) {
-                    Log.d("TAG_J", "An error occurred. ${t.localizedMessage}")
-                }
-            }
-            )
-        }.start()
 
-        Thread{
-            apiRetrofit.getLastTotals().enqueue(object : Callback<Totals> {
-                override fun onResponse(call: Call<Totals>, response: Response<Totals>) {
-                    response.body()?.let {
-                        Log.d("TAG_J", "${it[0]}")
-                    }
-                }
+    }
 
-                override fun onFailure(call: Call<Totals>, t: Throwable) {
-                    Log.d("TAG_J", "An error occurred. ${t.localizedMessage}")
-                }
-            })
-        }.start()
+    override fun displayError(errorMessage: String) {
+        Snackbar.make(binding.root,"An error occurred: $errorMessage", Snackbar.LENGTH_SHORT)
+    }
 
+    override fun displayWorldResults(worldResult: Totals) {
+        runOnUiThread {
+
+            binding.covidConfirmedTextview.text =
+                getString(R.string.latest_confirmed_world_total_value, worldResult[0].recovered.toString())
+            binding.covidRecoveredTextview.text = getString(R.string.latest_recovered_world_total_value, worldResult[0].recovered.toString())
+        }
+
+    }
+
+    override fun displayCountryResults(countryResults: List<CountryResult>) {
+        TODO("Not yet implemented")
     }
 
 }

@@ -2,7 +2,6 @@ package com.lightscout.c19tracker.model.network
 
 import com.lightscout.c19tracker.model.data.CountryResult
 import com.lightscout.c19tracker.model.data.Totals
-import com.lightscout.c19tracker.model.data.TotalsItem
 import com.lightscout.c19tracker.util.Constants.Companion.API_HOST
 import com.lightscout.c19tracker.util.Constants.Companion.API_KEY
 import com.lightscout.c19tracker.util.Constants.Companion.PATH_BY_COUNTRY_NAME
